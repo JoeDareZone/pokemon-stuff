@@ -4,17 +4,15 @@ import PokemonRow from "./components/PokemonRow";
 import { useEffect, useState } from "react";
 import { Pokemon } from "./types/pokemon";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { getPokemon } from "./hooks/getPokemon";
+import PokemonTable from "./components/PokemonTable";
 
 export default function App() {
   const queryClient = new QueryClient();
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <View style={styles.container}>
-        {pokemon && <PokemonRow pokemon={pokemon} />}
-        <StatusBar style="auto" />
+        <PokemonTable />
       </View>
     </QueryClientProvider>
   );

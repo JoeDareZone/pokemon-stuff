@@ -1,29 +1,25 @@
 import { useState } from "react";
+import { useQuery } from "react-query";
+import axios from "axios";
 import { Pokemon } from "../types/pokemon";
 
-export const getPokemon = async () => {
+const usePokemon = (pokemonName: string) => {
   const [pokemon, setPokemon] = useState<Pokemon>();
 
-  const url = "https://pokeapi.co/api/v2/pokemon/bulbasaur";
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
+  const { status, isError, data, error } = useQuery({
+    queryKey: ["pokemon", pokemonName],
+    queryFn: () =>
+      axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`).then(res =>
+        setPokemon({
+          id: res.data.id,
+          name: res.data.name,
+          types: res.data.types.map((t: any) => t.type.name),
+          sprite: res.data.sprites.back_default,
+        })
+      ),
+  });
 
-    const json = await response.json();
-
-    setPokemon({
-      id: json.id,
-      name: json.name,
-      types: json.types.map((t: any) => t.type.name),
-      sprite: json.sprites.back_default,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
-  }
-
-  return { pokemon };
+  return { pokemon, status, isError, error };
 };
+
+export default usePokemon;
