@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useInfiniteQuery } from "react-query";
+import { PokemonListSchema, PokemonSchema } from "../../models/pokemon.schema";
 import { Pokemon } from "../../types/pokemon";
 import { capitalizeFirstLetter } from "../helpers";
 
@@ -8,11 +9,18 @@ const fetchPokemon = async ({ pageParam = 0, limit = 20 }) => {
   const res = await axios.get(
     `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${pageParam}`
   );
-  return res.data.results;
+  try {
+    return PokemonListSchema.parse(res.data.results);
+  } catch (error) {
+    console.error("Failed to validate Pokemon list", error);
+    throw error;
+  }
 };
 
 const useAllPokemon = (limit: number) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   const {
     fetchNextPage,
     hasNextPage,
@@ -28,20 +36,32 @@ const useAllPokemon = (limit: number) => {
         return lastPage.length === limit ? pages.length * limit : undefined;
       },
       onSuccess: async data => {
-        const allPokemon = await Promise.all(
-          data.pages.flat().map(async (p: any) => {
-            const res = await axios.get(p.url);
-            return {
-              id: res.data.id,
-              name: capitalizeFirstLetter(res.data.name),
-              types: res.data.types.map((t: any) =>
-                capitalizeFirstLetter(t.type.name)
-              ),
-              sprite: res.data.sprites.front_default,
-            };
-          })
-        );
-        setPokemon(allPokemon);
+        try {
+          const allPokemon = await Promise.all(
+            data.pages.flat().map(async (p: any) => {
+              const res = await axios.get(p.url);
+              const validatedData = PokemonSchema.parse(res.data);
+              return {
+                id: validatedData.id,
+                name: capitalizeFirstLetter(validatedData.name),
+                types: validatedData.types.map((t: any) =>
+                  capitalizeFirstLetter(t.type.name)
+                ),
+                sprite: validatedData.sprites.front_default,
+              };
+            })
+          );
+          setPokemon(allPokemon);
+        } catch (error) {
+          console.error("Failed to validate Pokemon data", error);
+          setValidationError(
+            "Failed to validate Pokemon data. Please try again later."
+          );
+        }
+      },
+      onError: error => {
+        console.error("Error fetching Pokémon", error);
+        setValidationError("Failed to fetch Pokémon. Please try again later.");
       },
     }
   );
@@ -54,6 +74,7 @@ const useAllPokemon = (limit: number) => {
     isError,
     error,
     status,
+    validationError,
   };
 };
 

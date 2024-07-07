@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -22,12 +22,19 @@ const PokemonTable: React.FC = () => {
     isError,
     error,
     status,
+    validationError,
   } = useAllPokemon(POKEMON_LIMIT);
 
   const onSelectType = (type: string) => setSelectedType(type);
 
+  useEffect(() => {
+    if (validationError) {
+      Alert.alert("Something went wrong!", "Please try again later");
+    }
+  }, [validationError]);
+
   if (isError) {
-    console.log(error instanceof Error && error.message);
+    console.error(error instanceof Error && error.message);
     Alert.alert("We couldn't find any pokemon :(", "Please try again later");
   }
 
