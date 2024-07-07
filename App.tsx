@@ -4,35 +4,15 @@ import PokemonRow from "./components/PokemonRow";
 import { useEffect, useState } from "react";
 import { Pokemon } from "./types/pokemon";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { getPokemon } from "./hooks/getPokemon";
 
 export default function App() {
-  const [pokemon, setPokemon] = useState<Pokemon>();
   const queryClient = new QueryClient();
-  
-  const getPokemon = async () => {
-    const url = "https://pokeapi.co/api/v2/pokemon/bulbasaur";
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
 
-      const json = await response.json();
-
-      setPokemon({
-        id: json.id,
-        name: json.name,
-        types: json.types.map((t: any) => t.type.name),
-        sprite: json.sprites.back_default,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      }
-    }
-  };
-
-  const info = useQuery({ queryKey: ["pokemon"], queryFn: getPokemon });
+  const { status, isError, data, error } = useQuery({
+    queryKey: ["pokemon"],
+    queryFn: getPokemon.then(),
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
