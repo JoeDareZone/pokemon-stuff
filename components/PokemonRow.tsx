@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     borderWidth: 1,
-    padding: 10,
+    paddingHorizontal: 10,
+    minHeight: 70,
     alignItems: "center",
   },
   idText: {
@@ -42,7 +43,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height: 40,
-    width: 40,
+    height: "100%",
+    width: null,
+    resizeMode: "contain",
   },
 });
