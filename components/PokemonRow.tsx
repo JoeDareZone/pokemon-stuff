@@ -19,7 +19,7 @@ const PokemonRow: React.FC<PokemonRowProps> = ({ pokemon }) => {
         source={{ uri: pokemon.sprite }}
         style={styles.image}
         placeholder={{ blurhash }}
-        contentFit="cover"
+        contentFit="contain"
         transition={200}
       />
     </View>
