@@ -13,7 +13,6 @@ const fetchPokemon = async ({ pageParam = 0, limit = 20 }) => {
 
 const useAllPokemon = (limit: number) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-
   const {
     fetchNextPage,
     hasNextPage,
@@ -26,9 +25,7 @@ const useAllPokemon = (limit: number) => {
     ({ pageParam = 0 }) => fetchPokemon({ pageParam, limit }),
     {
       getNextPageParam: (lastPage, pages) => {
-        if (lastPage.length === limit) {
-          return pages.length * limit;
-        }
+        if (lastPage.length === limit) return pages.length * limit;
         return undefined;
       },
       onSuccess: async data => {

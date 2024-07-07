@@ -3,14 +3,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Pokemon } from "../types/pokemon";
+import { blurhash } from "../utils/constants";
 
 type PokemonRowProps = {
   pokemon: Pokemon;
 };
 
 const PokemonRow: React.FC<PokemonRowProps> = ({ pokemon }) => {
-  const blurhash = "LjPr|Axa.mNGq]e.X-f+%#R*sAof";
-
   return (
     <View style={styles.container}>
       <Text style={styles.idText}>{pokemon.id}</Text>

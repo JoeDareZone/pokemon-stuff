@@ -6,13 +6,13 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { POKEMON_LIMIT } from "../utils/constants";
 import useAllPokemon from "../utils/hooks/useAllPokemon";
 import PokemonRow from "./PokemonRow";
 import PokemonTableHeader from "./PokemonTableHeader";
 import PokemonTypeSelection from "./PokemonTypeSelection";
 
 const PokemonTable: React.FC = () => {
-  const [limit] = useState(20);
   const [selectedType, setSelectedType] = useState("");
   const {
     pokemon,
@@ -22,7 +22,7 @@ const PokemonTable: React.FC = () => {
     isError,
     error,
     status,
-  } = useAllPokemon(limit);
+  } = useAllPokemon(POKEMON_LIMIT);
 
   const onSelectType = (type: string) => setSelectedType(type);
 
@@ -31,9 +31,8 @@ const PokemonTable: React.FC = () => {
     Alert.alert("We couldn't find any pokemon :(", "Please try again later");
   }
 
-  if (status === "loading") {
+  if (status === "loading")
     return <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />;
-  }
 
   return (
     <View style={styles.container}>
@@ -46,7 +45,7 @@ const PokemonTable: React.FC = () => {
         }
         ListHeaderComponent={<PokemonTableHeader />}
         stickyHeaderIndices={[0]}
-        style={{ marginVertical: 20, width: "100%" }}
+        style={styles.flatList}
         renderItem={({ item }) => <PokemonRow pokemon={item} />}
         keyExtractor={item => item.id.toString()}
         onEndReached={() => {
@@ -70,7 +69,10 @@ export default PokemonTable;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+  },
+  flatList: {
+    flex: 1,
+    width: "100%",
   },
 });

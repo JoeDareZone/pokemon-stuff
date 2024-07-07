@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-type PokemonTableHeaderProps = {};
-
-const PokemonTableHeader: React.FC<PokemonTableHeaderProps> = ({}) => {
+const PokemonTableHeader: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.idText}>ID</Text>

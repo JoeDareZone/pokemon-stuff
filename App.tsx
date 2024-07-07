@@ -11,7 +11,7 @@ export default function App() {
       <SafeAreaView style={{ flex: 1 }}>
         <Image
           source={require("./assets/logo.png")}
-          style={{ height: 100, width: "100%" }}
+          style={{ height: 110, width: "100%" }}
           contentFit="cover"
         />
         <PokemonTable />

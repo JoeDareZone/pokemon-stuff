@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, ScrollView, StyleSheet } from "react-native";
+import { Button, ScrollView, StyleSheet, View } from "react-native";
+import { pokemonTypes } from "../utils/constants";
 import { capitalizeFirstLetter } from "../utils/helpers";
 
 type PokemonTypeSelectionProps = {
@@ -9,37 +10,23 @@ type PokemonTypeSelectionProps = {
 const PokemonTypeSelection: React.FC<PokemonTypeSelectionProps> = ({
   onSelectType,
 }) => {
-  const pokemonTypes = [
-    "Normal",
-    "Fire",
-    "Water",
-    "Grass",
-    "Electric",
-    "Ice",
-    "Fighting",
-    "Poison",
-    "Ground",
-    "Flying",
-    "Psychic",
-    "Bug",
-    "Rock",
-    "Ghost",
-    "Dark",
-    "Dragon",
-    "Steel",
-    "Fairy",
-  ];
-
   return (
-    <ScrollView horizontal style={styles.container}>
+    <ScrollView
+      horizontal
+      style={styles.container}
+      showsHorizontalScrollIndicator={false}
+    >
       {pokemonTypes.map(type => (
-        <Button
-          key={type}
-          title={capitalizeFirstLetter(type)}
-          onPress={() => onSelectType(type)}
-        />
+        <View key={type} style={styles.buttonContainer}>
+          <Button
+            title={capitalizeFirstLetter(type)}
+            onPress={() => onSelectType(type)}
+          />
+        </View>
       ))}
-      <Button title="All" onPress={() => onSelectType("")} />
+      <View style={styles.buttonContainer}>
+        <Button title="All" onPress={() => onSelectType("")} />
+      </View>
     </ScrollView>
   );
 };
@@ -48,8 +35,11 @@ export default PokemonTypeSelection;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    maxHeight: 40,
     marginVertical: 10,
-    borderWidth: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    marginHorizontal: 5,
   },
 });
