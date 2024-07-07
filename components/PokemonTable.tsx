@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
-import { Pokemon } from "../types/pokemon";
-import PokemonRow from "./PokemonRow";
-import { useQuery } from "react-query";
-import usePokemon from "../hooks/usePokemon";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import useAllPokemon from "../hooks/useAllPokemon";
+import PokemonRow from "./PokemonRow";
 
 type PokemonTableProps = {};
 

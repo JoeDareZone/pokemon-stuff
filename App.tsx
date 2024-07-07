@@ -11,8 +11,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-        <PokemonTable />
+      <PokemonTable />
     </QueryClientProvider>
   );
 }
-
