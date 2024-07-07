@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { Pokemon } from "../../types/pokemon";
-import { capitalizeFirstLetter } from "./helpers";
+import { capitalizeFirstLetter } from "../helpers";
 
 const useAllPokemon = (limit: number, offset: number) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);

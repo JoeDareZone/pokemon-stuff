@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  StyleSheet,
+  View,
+} from "react-native";
 import useAllPokemon from "../utils/hooks/useAllPokemon";
 import PokemonRow from "./PokemonRow";
 import PokemonTableHeader from "./PokemonTableHeader";
@@ -8,21 +14,13 @@ const PokemonTable: React.FC = () => {
   const [limit] = useState(20);
   const [offset, setOffset] = useState(0);
 
-  const { pokemon, status, isError, error, isFetching } = useAllPokemon(
-    limit,
-    offset
-  );
+  const { pokemon, isError, error, isFetching } = useAllPokemon(limit, offset);
 
-  const loadMore = () => {
-    setOffset(prevOffset => prevOffset + limit);
-  };
-
-  if (status === "loading") {
-    return <Text>Loading...</Text>;
-  }
+  const loadMore = () => setOffset(prevOffset => prevOffset + limit);
 
   if (isError) {
-    return <Text>Error: {error instanceof Error && error.message}</Text>;
+    console.log(error instanceof Error && error.message);
+    Alert.alert("We couldn't find any pokemon :(", "Please try again later");
   }
 
   return (
@@ -36,7 +34,11 @@ const PokemonTable: React.FC = () => {
         keyExtractor={item => item.id.toString()}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={isFetching ? <Text>Loading more...</Text> : null}
+        ListFooterComponent={
+          isFetching ? (
+            <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />
+          ) : null
+        }
       />
     </View>
   );
