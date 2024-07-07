@@ -1,5 +1,7 @@
+import { Image } from "expo-image";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+
 import { Pokemon } from "../types/pokemon";
 
 type PokemonRowProps = {
@@ -7,12 +9,20 @@ type PokemonRowProps = {
 };
 
 const PokemonRow: React.FC<PokemonRowProps> = ({ pokemon }) => {
+  const blurhash = "LjPr|Axa.mNGq]e.X-f+%#R*sAof";
+
   return (
     <View style={styles.container}>
       <Text style={styles.idText}>{pokemon.id}</Text>
       <Text style={styles.nameText}>{pokemon.name}</Text>
       <Text style={styles.typesText}>{pokemon.types.join(" / ")}</Text>
-      <Image source={{ uri: pokemon.sprite }} style={styles.image} />
+      <Image
+        source={{ uri: pokemon.sprite }}
+        style={styles.image}
+        placeholder={{ blurhash }}
+        contentFit="cover"
+        transition={200}
+      />
     </View>
   );
 };
@@ -45,6 +55,5 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     width: null,
-    resizeMode: "contain",
   },
 });

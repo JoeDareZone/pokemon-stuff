@@ -2,7 +2,6 @@ import { Image } from "expo-image";
 import { SafeAreaView } from "react-native";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PokemonTable from "./components/PokemonTable";
-import PokemonTypeSelection from "./components/PokemonTypeSelection";
 
 export default function App() {
   const queryClient = new QueryClient();
