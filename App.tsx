@@ -15,7 +15,6 @@ export default function App() {
           style={{ height: 100, width: "100%" }}
           contentFit="cover"
         />
-        <PokemonTypeSelection />
         <PokemonTable />
       </SafeAreaView>
     </QueryClientProvider>
