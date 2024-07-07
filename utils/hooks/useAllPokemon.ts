@@ -1,9 +1,10 @@
+import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import axios from "axios";
-import { Pokemon } from "../types/pokemon";
+import { Pokemon } from "../../types/pokemon";
+import { capitalizeFirstLetter } from "./helpers";
 
-const usePokemon = () => {
+const useAllPokemon = () => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
 
   const { status, isError, data, error } = useQuery({
@@ -18,8 +19,10 @@ const usePokemon = () => {
       Promise.all(data.map((p: any) => axios.get(p.url))).then(results => {
         const detailedPokemon = results.map(res => ({
           id: res.data.id,
-          name: res.data.name,
-          types: res.data.types.map((t: any) => t.type.name),
+          name: capitalizeFirstLetter(res.data.name),
+          types: res.data.types.map((t: any) =>
+            capitalizeFirstLetter(t.type.name)
+          ),
           sprite: res.data.sprites.back_default,
         }));
         setPokemon(detailedPokemon);
@@ -30,4 +33,4 @@ const usePokemon = () => {
   return { pokemon, status, isError, error };
 };
 
-export default usePokemon;
+export default useAllPokemon;
