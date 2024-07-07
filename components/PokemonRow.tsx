@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    borderWidth: 1,
     paddingHorizontal: 10,
     minHeight: 70,
     alignItems: "center",

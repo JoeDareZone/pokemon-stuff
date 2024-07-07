@@ -31,35 +31,39 @@ const PokemonTable: React.FC = () => {
     Alert.alert("We couldn't find any pokemon :(", "Please try again later");
   }
 
-  if (status === "loading")
-    return <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />;
-
   return (
     <View style={styles.container}>
       <PokemonTypeSelection onSelectType={onSelectType} />
-      <FlatList
-        data={
-          selectedType
-            ? pokemon.filter(p => p.types.includes(selectedType))
-            : pokemon || []
-        }
-        ListHeaderComponent={<PokemonTableHeader />}
-        stickyHeaderIndices={[0]}
-        style={styles.flatList}
-        renderItem={({ item }) => <PokemonRow pokemon={item} />}
-        keyExtractor={item => item.id.toString()}
-        onEndReached={() => {
-          if (hasNextPage) {
-            fetchNextPage();
+      {status === "loading" ? (
+        <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />
+      ) : (
+        <FlatList
+          data={
+            selectedType
+              ? pokemon.filter(p => p.types.includes(selectedType))
+              : pokemon || []
           }
-        }}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />
-          ) : null
-        }
-      />
+          ListHeaderComponent={<PokemonTableHeader />}
+          stickyHeaderIndices={[0]}
+          style={styles.flatList}
+          renderItem={({ item }) => <PokemonRow pokemon={item} />}
+          keyExtractor={item => item.id.toString()}
+          ItemSeparatorComponent={() => (
+            <View style={{ height: 1, backgroundColor: "#ddd" }} />
+          )}
+          onEndReached={() => {
+            if (hasNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator size={"large"} style={{ marginTop: 20 }} />
+            ) : null
+          }
+        />
+      )}
     </View>
   );
 };

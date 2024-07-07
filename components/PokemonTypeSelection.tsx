@@ -16,6 +16,9 @@ const PokemonTypeSelection: React.FC<PokemonTypeSelectionProps> = ({
       style={styles.container}
       showsHorizontalScrollIndicator={false}
     >
+      <View style={styles.buttonContainer}>
+        <Button title="All" onPress={() => onSelectType("")} />
+      </View>
       {pokemonTypes.map(type => (
         <View key={type} style={styles.buttonContainer}>
           <Button
@@ -24,9 +27,6 @@ const PokemonTypeSelection: React.FC<PokemonTypeSelectionProps> = ({
           />
         </View>
       ))}
-      <View style={styles.buttonContainer}>
-        <Button title="All" onPress={() => onSelectType("")} />
-      </View>
     </ScrollView>
   );
 };

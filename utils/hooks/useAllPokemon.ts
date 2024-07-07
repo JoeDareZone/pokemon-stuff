@@ -25,8 +25,7 @@ const useAllPokemon = (limit: number) => {
     ({ pageParam = 0 }) => fetchPokemon({ pageParam, limit }),
     {
       getNextPageParam: (lastPage, pages) => {
-        if (lastPage.length === limit) return pages.length * limit;
-        return undefined;
+        return lastPage.length === limit ? pages.length * limit : undefined;
       },
       onSuccess: async data => {
         const allPokemon = await Promise.all(
