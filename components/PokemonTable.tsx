@@ -9,10 +9,11 @@ import {
 import useAllPokemon from "../utils/hooks/useAllPokemon";
 import PokemonRow from "./PokemonRow";
 import PokemonTableHeader from "./PokemonTableHeader";
+import PokemonTypeSelection from "./PokemonTypeSelection";
 
 const PokemonTable: React.FC = () => {
   const [limit] = useState(20);
-
+  const [selectedType, setSelectedType] = useState("");
   const {
     pokemon,
     fetchNextPage,
@@ -22,6 +23,8 @@ const PokemonTable: React.FC = () => {
     error,
     status,
   } = useAllPokemon(limit);
+
+  const onSelectType = (type: string) => setSelectedType(type);
 
   if (isError) {
     console.log(error instanceof Error && error.message);
@@ -34,8 +37,13 @@ const PokemonTable: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <PokemonTypeSelection onSelectType={onSelectType} />
       <FlatList
-        data={pokemon || []}
+        data={
+          selectedType
+            ? pokemon.filter(p => p.types.includes(selectedType))
+            : pokemon || []
+        }
         ListHeaderComponent={<PokemonTableHeader />}
         stickyHeaderIndices={[0]}
         style={{ marginVertical: 20, width: "100%" }}
