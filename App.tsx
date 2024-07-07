@@ -9,10 +9,6 @@ import { getPokemon } from "./hooks/getPokemon";
 export default function App() {
   const queryClient = new QueryClient();
 
-  const { status, isError, data, error } = useQuery({
-    queryKey: ["pokemon"],
-    queryFn: getPokemon.then(),
-  });
 
   return (
     <QueryClientProvider client={queryClient}>
