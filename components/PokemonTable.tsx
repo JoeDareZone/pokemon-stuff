@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { Pokemon } from "../types/pokemon";
 import PokemonRow from "./PokemonRow";
 import { useQuery } from "react-query";
@@ -10,15 +10,12 @@ import useAllPokemon from "../hooks/useAllPokemon";
 type PokemonTableProps = {};
 
 const PokemonTable: React.FC<PokemonTableProps> = ({}) => {
-//   const { pokemon, status, isError, error } = usePokemon("bulbasaur");
-  const { status, isError, error } = useAllPokemon();
-
+  //   const { pokemon, status, isError, error } = usePokemon("bulbasaur");
+  const { pokemon, status, isError, error } = useAllPokemon();
 
   useEffect(() => {
-    console.log("status", status)
-    console.log("isError", isError)
-    console.log('error', error)
-  }, [status, isError, error])
+    console.log(pokemon.length);
+  }, [status, isError, error]);
 
   if (status === "loading") {
     return <Text>Loading...</Text>;
@@ -30,11 +27,14 @@ const PokemonTable: React.FC<PokemonTableProps> = ({}) => {
 
   return (
     <View style={styles.container}>
-      {/* {!pokemon ? (
+      {!pokemon ? (
         <Text>No pokemon found!</Text>
       ) : (
-        <PokemonRow pokemon={pokemon} />
-      )} */}
+        <FlatList
+          data={pokemon}
+          renderItem={item => <PokemonRow pokemon={item.item} />}
+        />
+      )}
     </View>
   );
 };
