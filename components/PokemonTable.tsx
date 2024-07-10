@@ -20,22 +20,13 @@ const PokemonTable: React.FC = () => {
     hasNextPage,
     isFetchingNextPage,
     isError,
-    error,
     status,
-    validationError,
   } = useAllPokemon(POKEMON_LIMIT);
 
   const onSelectType = (type: string) => setSelectedType(type);
 
-  useEffect(() => {
-    if (validationError) {
-      Alert.alert("Something went wrong!", "Please try again later");
-    }
-  }, [validationError]);
-
   if (isError) {
-    console.error(error instanceof Error && error.message);
-    Alert.alert("We couldn't find any pokemon :(", "Please try again later");
+    Alert.alert("Something went wrong :(", "Please try again later");
   }
 
   return (

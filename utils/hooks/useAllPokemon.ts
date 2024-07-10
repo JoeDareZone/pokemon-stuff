@@ -1,26 +1,25 @@
 import axios from "axios";
 import { useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import { PokemonListSchema, PokemonSchema } from "../../models/pokemon.schema";
+import { pokemonListSchema, pokemonSchema } from "../../models/pokemon.schema";
 import { Pokemon } from "../../types/pokemon";
 import { capitalizeFirstLetter } from "../helpers";
 
-const fetchPokemon = async ({ pageParam = 0, limit = 20 }) => {
+const fetchPokemon = async ({
+  pageParam,
+  limit,
+}: {
+  pageParam: number;
+  limit: number;
+}) => {
   const res = await axios.get(
     `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${pageParam}`
   );
-  try {
-    return PokemonListSchema.parse(res.data.results);
-  } catch (error) {
-    console.error("Failed to validate Pokemon list", error);
-    throw error;
-  }
+  return pokemonListSchema.parse(res.data.results);
 };
 
 const useAllPokemon = (limit: number) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-  const [validationError, setValidationError] = useState<string | null>(null);
-
   const {
     fetchNextPage,
     hasNextPage,
@@ -30,39 +29,28 @@ const useAllPokemon = (limit: number) => {
     status,
   } = useInfiniteQuery(
     ["allPokemon"],
-    ({ pageParam = 0 }) => fetchPokemon({ pageParam, limit }),
+    async ({ pageParam }) => {
+      const pokemonList = await fetchPokemon({ pageParam, limit });
+
+      const allPokemon = await Promise.all(
+        pokemonList.map(async p => {
+          const res = await axios.get(p.url);
+          return pokemonSchema.parse(res.data);
+        })
+      );
+
+      return allPokemon.map(pokemon => ({
+        id: pokemon.id,
+        name: capitalizeFirstLetter(pokemon.name),
+        types: pokemon.types.map(t => capitalizeFirstLetter(t.type.name)),
+        sprite: pokemon.sprites.front_default,
+      }));
+    },
     {
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.length === limit ? pages.length * limit : undefined;
-      },
-      onSuccess: async data => {
-        try {
-          const allPokemon = await Promise.all(
-            data.pages.flat().map(async (p: any) => {
-              const res = await axios.get(p.url);
-              const validatedData = PokemonSchema.parse(res.data);
-              return {
-                id: validatedData.id,
-                name: capitalizeFirstLetter(validatedData.name),
-                types: validatedData.types.map((t: any) =>
-                  capitalizeFirstLetter(t.type.name)
-                ),
-                sprite: validatedData.sprites.front_default,
-              };
-            })
-          );
-          setPokemon(allPokemon);
-        } catch (error) {
-          console.error("Failed to validate Pokemon data", error);
-          setValidationError(
-            "Failed to validate Pokemon data. Please try again later."
-          );
-        }
-      },
-      onError: error => {
-        console.error("Error fetching Pokémon", error);
-        setValidationError("Failed to fetch Pokémon. Please try again later.");
-      },
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length === limit ? allPages.length * limit : undefined,
+      onError: error => console.error(error instanceof Error && error.message),
+      onSuccess: data => setPokemon(data.pages.flat()),
     }
   );
 
@@ -74,7 +62,6 @@ const useAllPokemon = (limit: number) => {
     isError,
     error,
     status,
-    validationError,
   };
 };
 
